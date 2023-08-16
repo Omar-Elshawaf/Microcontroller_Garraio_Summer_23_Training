@@ -1,0 +1,50 @@
+#include <stdint.h>
+#include "tm4c123gh6pm.h"
+
+#define LED_RED   (1U << 1)
+#define LED_BLUE  (1U << 2)
+#define LED_GREEN (1U << 3)
+
+void delay() {
+    volatile uint32_t counter = 1000000;
+    while (counter > 0) {
+        --counter;
+    }
+}
+
+int main() {
+    SYSCTL_RCGCGPIO_R |= (1U << 5);  /* enable clock for GPIOF */
+    GPIO_PORTF_DIR_R |= (LED_RED | LED_BLUE | LED_GREEN);
+    GPIO_PORTF_DEN_R |= (LED_RED | LED_BLUE | LED_GREEN);
+
+    /* start with turning all LEDs off */
+    GPIO_PORTF_DATA_R &= ~(LED_RED | LED_BLUE | LED_GREEN);
+
+    while (1) {
+        // Turn on RED LED
+        GPIO_PORTF_DATA_R |= LED_RED;
+        delay();
+
+        // Turn off RED LED
+        GPIO_PORTF_DATA_R &= ~LED_RED;
+        delay();
+
+        // Turn on BLUE LED
+        GPIO_PORTF_DATA_R |= LED_BLUE;
+        delay();
+
+        // Turn off BLUE LED
+        GPIO_PORTF_DATA_R &= ~LED_BLUE;
+        delay();
+
+        // Turn on GREEN LED
+        GPIO_PORTF_DATA_R |= LED_GREEN;
+        delay();
+
+        // Turn off GREEN LED
+        GPIO_PORTF_DATA_R &= ~LED_GREEN;
+        delay();
+    }
+
+    return 0; // The return statement is optional in most embedded environments
+}
